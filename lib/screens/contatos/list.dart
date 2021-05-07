@@ -1,10 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobclinic/database/app.dart';
+import 'package:mobclinic/database/dao/contact_dao.dart';
 import 'package:mobclinic/models/contacts.dart';
 import 'package:mobclinic/screens/contatos/form.dart';
 
-class ContactsList extends StatelessWidget {
+class ContactsList extends StatefulWidget {
+  @override
+  _ContactListState createState() => _ContactListState();
+}
+
+class _ContactListState extends State<ContactsList> {
+  final ContactDao _dao = ContactDao();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +20,7 @@ class ContactsList extends StatelessWidget {
       ),
       body: FutureBuilder<List<Contact>>(
         initialData: [],
-        future: findAll(),
+        future: _dao.findAll(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -57,7 +64,9 @@ class ContactsList extends StatelessWidget {
                   builder: (context) => ContactForm(),
                 ),
               )
-              .then((newContact) {});
+              .then(
+                (value) => setState(() {}),
+              );
         },
         child: Icon(Icons.add),
       ),

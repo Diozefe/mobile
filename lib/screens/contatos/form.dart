@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobclinic/database/dao/contact_dao.dart';
 import 'package:mobclinic/models/contacts.dart';
 
 class ContactForm extends StatefulWidget {
@@ -12,6 +13,7 @@ class _ContactFormState extends State<ContactForm> {
 
   final TextEditingController _accountNumerConttroller =
       TextEditingController();
+  final ContactDao _dao = ContactDao();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +56,7 @@ class _ContactFormState extends State<ContactForm> {
                     final int accountNumber =
                         int.tryParse(_accountNumerConttroller.text);
                     final Contact newContact = Contact(0, name, accountNumber);
-                    Navigator.pop(context, newContact);
+                    _dao.save(newContact).then((id) => Navigator.pop(context));
                   },
                   child: Text('Criar'),
                 ),
