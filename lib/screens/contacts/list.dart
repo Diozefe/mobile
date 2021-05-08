@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobclinic/components/progress.dart';
 import 'package:mobclinic/database/dao/contact_dao.dart';
 import 'package:mobclinic/models/contacts.dart';
 import 'package:mobclinic/screens/contacts/form.dart';
@@ -16,7 +17,7 @@ class _ContactListState extends State<ContactsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Transfer'),
+        title: Text('Contatos'),
       ),
       body: FutureBuilder<List<Contact>>(
         initialData: [],
@@ -26,19 +27,7 @@ class _ContactListState extends State<ContactsList> {
             case ConnectionState.none:
               break;
             case ConnectionState.waiting:
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: Text('Carregando'),
-                    ),
-                  ],
-                ),
-              );
+              return Progress();
               break;
             case ConnectionState.active:
               break;

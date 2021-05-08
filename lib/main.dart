@@ -4,7 +4,6 @@ import 'package:mobclinic/screens/dashboard/dashboard.dart';
 
 void main() {
   runApp(SlackApp());
-  findAll();
 }
 
 class SlackApp extends StatelessWidget {
