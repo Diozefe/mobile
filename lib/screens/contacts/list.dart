@@ -4,6 +4,7 @@ import 'package:mobclinic/components/progress.dart';
 import 'package:mobclinic/database/dao/contact_dao.dart';
 import 'package:mobclinic/models/contacts.dart';
 import 'package:mobclinic/screens/contacts/form.dart';
+import 'package:mobclinic/screens/transaction/form.dart';
 
 class ContactsList extends StatefulWidget {
   @override
@@ -36,7 +37,16 @@ class _ContactListState extends State<ContactsList> {
               return ListView.builder(
                 itemBuilder: (context, index) {
                   final Contact contact = contacts[index];
-                  return _ContactItem(contact);
+                  return _ContactItem(
+                    contact,
+                    onClick: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => TransactionForm(contact),
+                        ),
+                      );
+                    },
+                  );
                 },
                 itemCount: contacts.length,
               );
@@ -65,11 +75,16 @@ class _ContactListState extends State<ContactsList> {
 
 class _ContactItem extends StatelessWidget {
   final Contact contact;
-  _ContactItem(this.contact);
+  final Function onClick;
+  _ContactItem(
+    this.contact, {
+    @required this.onClick,
+  });
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        onTap: onClick,
         title: Text(
           contact.name,
           style: TextStyle(fontSize: 24.0, fontFamily: 'Roboto'),
