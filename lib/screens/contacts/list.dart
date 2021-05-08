@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobclinic/database/dao/contact_dao.dart';
 import 'package:mobclinic/models/contacts.dart';
-import 'package:mobclinic/screens/contatos/form.dart';
+import 'package:mobclinic/screens/contacts/form.dart';
 
 class ContactsList extends StatefulWidget {
   @override
@@ -16,7 +16,7 @@ class _ContactListState extends State<ContactsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contatos'),
+        title: Text('Transfer'),
       ),
       body: FutureBuilder<List<Contact>>(
         initialData: [],
