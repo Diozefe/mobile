@@ -58,7 +58,9 @@ class _FeatureItem extends StatelessWidget {
   final IconData icon;
   final Function onClick;
 
-  const _FeatureItem(this.name, this.icon, {@required this.onClick});
+  const _FeatureItem(this.name, this.icon, {@required this.onClick})
+      : assert(icon != null),
+        assert(onClick != null);
   @override
   Widget build(BuildContext context) {
     return Padding(
