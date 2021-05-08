@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobclinic/components/centered_message.dart';
 import 'package:mobclinic/components/progress.dart';
-import 'package:mobclinic/http/webclient.dart';
+import 'package:mobclinic/http/webclients/transaction.dart';
 import 'package:mobclinic/models/transaction.dart';
 
 class TransactionsList extends StatelessWidget {
+  final TransactionWebclient _webclient = TransactionWebclient();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,7 +13,7 @@ class TransactionsList extends StatelessWidget {
         title: Text('Transactions'),
       ),
       body: FutureBuilder<List<Transaction>>(
-        future: findAll(),
+        future: _webclient.findAll(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:

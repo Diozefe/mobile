@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobclinic/http/webclient.dart';
+import 'package:mobclinic/http/webclients/transaction.dart';
 import 'package:mobclinic/models/contacts.dart';
 import 'package:mobclinic/models/transaction.dart';
 
@@ -14,7 +15,7 @@ class TransactionForm extends StatefulWidget {
 
 class _TransactionFormState extends State<TransactionForm> {
   final TextEditingController _valueController = TextEditingController();
-
+  final TransactionWebclient _webclient = TransactionWebclient();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,9 +64,12 @@ class _TransactionFormState extends State<TransactionForm> {
                           double.tryParse(_valueController.text);
                       final transactionCreated =
                           Transaction(value, widget.contact);
-                      save(transactionCreated).then((transaction) => {
-                            if (transaction != null) {Navigator.pop(context)}
-                          });
+                      _webclient
+                          .save(transactionCreated)
+                          .then((transaction) => {
+                                if (transaction != null)
+                                  {Navigator.pop(context)}
+                              });
                     },
                   ),
                 ),
