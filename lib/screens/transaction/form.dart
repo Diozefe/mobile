@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:mobclinic/components/response_dialog.dart';
 import 'package:mobclinic/components/transaction_auth.dart';
@@ -17,6 +19,7 @@ class TransactionForm extends StatefulWidget {
 class _TransactionFormState extends State<TransactionForm> {
   final TextEditingController _valueController = TextEditingController();
   final TransactionWebclient _webclient = TransactionWebclient();
+  final String transactionId = Uuid().v4();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +67,7 @@ class _TransactionFormState extends State<TransactionForm> {
                       final double value =
                           double.tryParse(_valueController.text);
                       final transactionCreated =
-                          Transaction(value, widget.contact);
+                          Transaction(value, widget.contact, transactionId);
                       showDialog(
                           context: context,
                           builder: (contextDialog) {
@@ -90,17 +93,19 @@ class _TransactionFormState extends State<TransactionForm> {
     String password,
     BuildContext context,
   ) async {
-    Transaction transaction =
-        await _webclient.save(transactionCreated, password, context).catchError(
-            (e) => {
-                  showDialog(
-                      context: context,
-                      builder: (contextDialog) {
-                        return FailureDialog(e.message);
-                      })
-                },
+    Transaction transaction = await _webclient
+        .save(transactionCreated, password, context)
+        .catchError((e) => _showFailedMessage(context, message: e.message),
+            test: (e) => e is HttpException)
+        .catchError((e) => _showFailedMessage(context, message: e.message),
+            test: (e) => e is TimeoutException)
+        .catchError((e) => _showFailedMessage(context),
             test: (e) => e is Exception);
 
+    _sucessfulMessage(transaction, context);
+  }
+
+  void _sucessfulMessage(Transaction transaction, BuildContext context) async {
     if (transaction != null) {
       await showDialog(
           context: context,
@@ -109,5 +114,16 @@ class _TransactionFormState extends State<TransactionForm> {
           });
       Navigator.pop(context);
     }
+  }
+
+  void _showFailedMessage(
+    BuildContext context, {
+    String message = 'Unknow Error',
+  }) async {
+    await showDialog(
+        context: context,
+        builder: (contextDialog) {
+          return FailureDialog(message);
+        });
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobclinic/screens/dashboard/dashboard.dart';
+import 'package:uuid/uuid.dart';
 
 void main() {
   runApp(SlackApp());
