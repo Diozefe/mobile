@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobclinic/components/response_dialog.dart';
 import 'package:mobclinic/components/transaction_auth.dart';
 import 'package:mobclinic/http/webclients/transaction.dart';
 import 'package:mobclinic/models/contacts.dart';
@@ -69,12 +70,7 @@ class _TransactionFormState extends State<TransactionForm> {
                           builder: (contextDialog) {
                             return TransactionAuthDialog(
                               onConfirm: (password) async {
-                                _webclient
-                                    .save(transactionCreated, password, context)
-                                    .then((transaction) => {
-                                          if (transaction != null)
-                                            {Navigator.pop(context)}
-                                        });
+                                _save(transactionCreated, password, context);
                               },
                             );
                           });
@@ -87,5 +83,31 @@ class _TransactionFormState extends State<TransactionForm> {
         ),
       ),
     );
+  }
+
+  void _save(
+    Transaction transactionCreated,
+    String password,
+    BuildContext context,
+  ) async {
+    Transaction transaction =
+        await _webclient.save(transactionCreated, password, context).catchError(
+            (e) => {
+                  showDialog(
+                      context: context,
+                      builder: (contextDialog) {
+                        return FailureDialog(e.message);
+                      })
+                },
+            test: (e) => e is Exception);
+
+    if (transaction != null) {
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return SuccessDialog('Sucessful Transaction');
+          });
+      Navigator.pop(context);
+    }
   }
 }

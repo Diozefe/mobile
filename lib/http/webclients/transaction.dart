@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:http/src/response.dart';
 import 'package:mobclinic/http/webclient.dart';
@@ -28,8 +30,18 @@ class TransactionWebclient {
             body: transactionJSON)
         .timeout(Duration(seconds: 5));
 
-    return Transaction.fromJson(jsonDecode(res.body));
+    if (res.statusCode == 200) {
+      return Transaction.fromJson(jsonDecode(res.body));
+    }
+
+    _throwHttpError(res.statusCode);
   }
 
-  List<Transaction> _toTransactions(Response res) {}
+  void _throwHttpError(int statusCode) =>
+      throw Exception(_statusHttpResponses[statusCode]);
+
+  static final Map<int, String> _statusHttpResponses = {
+    400: 'There was an error submitting transaction',
+    401: 'Authentication failed'
+  };
 }
