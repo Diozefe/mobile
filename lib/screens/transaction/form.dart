@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobclinic/http/webclient.dart';
+import 'package:mobclinic/components/transaction_auth.dart';
 import 'package:mobclinic/http/webclients/transaction.dart';
 import 'package:mobclinic/models/contacts.dart';
 import 'package:mobclinic/models/transaction.dart';
@@ -64,12 +64,20 @@ class _TransactionFormState extends State<TransactionForm> {
                           double.tryParse(_valueController.text);
                       final transactionCreated =
                           Transaction(value, widget.contact);
-                      _webclient
-                          .save(transactionCreated)
-                          .then((transaction) => {
-                                if (transaction != null)
-                                  {Navigator.pop(context)}
-                              });
+                      showDialog(
+                          context: context,
+                          builder: (contextDialog) {
+                            return TransactionAuthDialog(
+                              onConfirm: (password) async {
+                                _webclient
+                                    .save(transactionCreated, password, context)
+                                    .then((transaction) => {
+                                          if (transaction != null)
+                                            {Navigator.pop(context)}
+                                        });
+                              },
+                            );
+                          });
                     },
                   ),
                 ),

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:http/src/response.dart';
 import 'package:mobclinic/http/webclient.dart';
 import 'package:mobclinic/models/transaction.dart';
@@ -12,13 +13,17 @@ class TransactionWebclient {
         .toList();
   }
 
-  Future<Transaction> save(Transaction transaction) async {
+  Future<Transaction> save(
+    Transaction transaction,
+    String password,
+    BuildContext context,
+  ) async {
     final String transactionJSON = jsonEncode(transaction.toJson());
     final res = await client
         .post(baseUrl,
             headers: {
               'Content-type': 'application/json',
-              'password': '1000',
+              'password': password,
             },
             body: transactionJSON)
         .timeout(Duration(seconds: 5));

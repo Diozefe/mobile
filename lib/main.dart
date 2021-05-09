@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobclinic/http/webclient.dart';
 import 'package:mobclinic/screens/dashboard/dashboard.dart';
 
 void main() {
