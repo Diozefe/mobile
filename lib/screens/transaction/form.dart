@@ -102,31 +102,12 @@ class _TransactionFormState extends State<TransactionForm> {
     String password,
     BuildContext context,
   ) async {
-    Transaction transaction =
-        await _send(transactionCreated, password, context);
-
+    Transaction transaction = await _send(
+      transactionCreated,
+      password,
+      context,
+    );
     _sucessfulMessage(transaction, context);
-  }
-
-  Future<Transaction> _send(Transaction transactionCreated, String password,
-      BuildContext context) async {
-    setState(() {
-      _seding = true;
-    });
-    Transaction transaction = await _webclient
-        .save(transactionCreated, password, context)
-        .catchError((e) => _showFailedMessage(context, message: e.message),
-            test: (e) => e is HttpException)
-        .catchError((e) => _showFailedMessage(context, message: e.message),
-            test: (e) => e is TimeoutException)
-        .catchError((e) => _showFailedMessage(context),
-            test: (e) => e is Exception)
-        .whenComplete(() {
-      setState(() {
-        _seding = false;
-      });
-    });
-    return transaction;
   }
 
   void _sucessfulMessage(Transaction transaction, BuildContext context) async {
@@ -140,13 +121,35 @@ class _TransactionFormState extends State<TransactionForm> {
     }
   }
 
-  Future<Transaction> _showFailedMessage(
+  Future<Transaction> _send(Transaction transactionCreated, String password,
+      BuildContext context) async {
+    setState(() {
+      _seding = true;
+    });
+    final Transaction transaction = await _webclient
+        .save(transactionCreated, password)
+        .catchError((e) => _showFailedMessage(context, message: e.message),
+            test: (e) => e is HttpException)
+        .catchError(
+            (e) => _showFailedMessage(context,
+                message: 'timeout submitting the transaction'),
+            test: (e) => e is TimeoutException)
+        .whenComplete(() {
+      setState(() {
+        _seding = false;
+      });
+    });
+    return transaction;
+  }
+
+  void _showFailedMessage(
     BuildContext context, {
-    String message = 'Unknow Error',
-  }) async =>
-      await showDialog(
-          context: context,
-          builder: (contextDialog) {
-            return FailureDialog(message);
-          });
+    String message = 'Unknown Error',
+  }) {
+    showDialog(
+        context: context,
+        builder: (contextDialog) {
+          return FailureDialog(message);
+        });
+  }
 }

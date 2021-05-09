@@ -1,7 +1,5 @@
 import 'dart:ffi';
 
-import 'package:flutter/cupertino.dart';
-import 'package:http/src/response.dart';
 import 'package:mobclinic/http/webclient.dart';
 import 'package:mobclinic/models/transaction.dart';
 import 'dart:convert';
@@ -18,7 +16,6 @@ class TransactionWebclient {
   Future<Transaction> save(
     Transaction transaction,
     String password,
-    BuildContext context,
   ) async {
     final String transactionJSON = jsonEncode(transaction.toJson());
 
@@ -33,7 +30,7 @@ class TransactionWebclient {
       return Transaction.fromJson(jsonDecode(res.body));
     }
 
-    HttpException(_getMessage(res.statusCode));
+    throw HttpException(_getMessage(res.statusCode));
   }
 
   String _getMessage(int statusCode) {
